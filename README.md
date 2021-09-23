@@ -1,5 +1,5 @@
 # HWRNG
-Simple, fun Python Script that implements randomization of various settings of the video game Halo Wars to improve replayability of the game.
+Simple, fun Python Script that implements randomization of various settings of the video game Halo Wars: Definitive Edition to improve replayability of the game.
 This script is based on Leader Overhaul mod (https://www.moddb.com/mods/halo-wars-leader-overhaul-mod/#8117934) and includes all leaders from it as of the September 2021 v1.6 update.
 
 # Features
@@ -26,4 +26,10 @@ This script is based on Leader Overhaul mod (https://www.moddb.com/mods/halo-war
 # Tools used
 - Eclipse IDE (https://www.eclipse.org/ide/)
 - PyDev plugin for Eclipse (https://www.pydev.org/index.html)
+- Python (https://www.python.org/)
 - GitHub
+
+# About Halo Wars: Definitive Edition
+https://www.microsoft.com/en-us/store/p/halo-wars-definitive-edition/9nblggh5wlr0
+Halo Wars is a real-time strategy video game developed by Ensemble Studios, released on the Xbox 360 in Feb 2009. It was later ported to the PC and Xbox One line of consoles under the name Halo Wars: Definitive Edition.
+All rights to the Halo Wars and Halo intellectual properties are owned by Microsoft.
