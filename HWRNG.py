@@ -1,14 +1,22 @@
 '''
 Created on Sep 18, 2021
-
+Updated on Sep 22, 2021
 @author: Nodever2
 '''
+
+#NEW UPDATE! YOU CAN CHANGE THESE CONFIG VALUES TO MAKE THE ALGORITHM WORK DIFFERENTLY!
+#They all default at -1 meaning the program will automatically determine what they should be.
+ConfigMaxPlayersPerGame = 6#Default: 6. Will change to default if not set to an int between 1 and 6 (inclusive).
+#todo: cleanup code (ADD FUCNTIONS, REMOVE REPEATED CODE), comments etc. maybe redo variable names? add isInstanceOf or whatever it is for config values.
+#and add optional alternate algorhthm for RNGing what team players are on that has an equal chance of all open slots
+#also make it so that the names of maps/leaders print with spaces instead of underscores if possible?
 
 import random
 import math
 from enum import Enum
 
-class HWLeader(Enum):
+class HWLeader(Enum):#Enum with all possible leaders in Halo Wars
+    INVALID = 0#except this
     The_United_Rebel_Front = 1
     The_Flood_Gravemind = 2
     Sesa_Refumee = 3
@@ -20,8 +28,8 @@ class HWLeader(Enum):
     Tartarus = 9
     Prophet_Of_Regret = 10
     
-class HWMap(Enum):
-    INVALID = 0
+class HWMap(Enum):#Enum with all possible maps in Halo Wars
+    INVALID = 0#except this
     BLOOD_GULTCH = 1#1v1
     CHASMS = 2
     PIRTH_OUTSKIRTS = 3
@@ -55,7 +63,13 @@ if (playerCount <= 0):
     input("Press enter to close...")
     exit()
 remainingUnallocatedHumans = playerCount
-numGamesLeft = int(math.ceil(playerCount/6))
+maxPlayers = 6
+if (ConfigMaxPlayersPerGame >= 1 and ConfigMaxPlayersPerGame <= 6):
+    maxPlayers = ConfigMaxPlayersPerGame
+else:
+    print("Config Warning: Max Players Per Game is outside the allowed range. Using " + str(maxPlayers) + " instead.")
+numGamesLeft = int(math.ceil(playerCount/maxPlayers))
+
 iteration = 0
 lastGamesHighestPlayerNum = 0
 while (remainingUnallocatedHumans > 0):                    #this code supports more than 6 players; it will divide the players evenly between 2 different games if so
@@ -63,7 +77,7 @@ while (remainingUnallocatedHumans > 0):                    #this code supports m
     print("===========================")
     print("GAME " + str(iteration) + ": ")
     humansThisGame = -1
-    if (remainingUnallocatedHumans > 6):
+    if (remainingUnallocatedHumans > maxPlayers):
         humansThisGame = int(math.ceil(remainingUnallocatedHumans/numGamesLeft))     #amount of players in each game (todoL figure this out before the loop I think)
     else:
         humansThisGame = remainingUnallocatedHumans
@@ -106,7 +120,7 @@ while (remainingUnallocatedHumans > 0):                    #this code supports m
     
     
     
-    print("  TEAM 1:")
+    print("  TEAM ALPHA:")
     for i in range((int)(rows/2)):#team 1
         if (arr[i][0] != 0):
             if (arr[i][0]+lastGamesHighestPlayerNum < 10):
@@ -118,7 +132,7 @@ while (remainingUnallocatedHumans > 0):                    #this code supports m
         else:
             print("    AI        " + ": " + str(arr[i][1].name))
         
-    print("  TEAM 2:")
+    print("  TEAM BRAVO:")
     for j in range((int)(rows/2)):#team 2
         i = j + (int)(rows/2)
         if (arr[i][0] != 0):
