@@ -22,3 +22,8 @@ This script is based on Leader Overhaul mod (https://www.moddb.com/mods/halo-war
 - Python's random (https://docs.python.org/3/library/random.html)
 - Python's math (https://docs.python.org/3/library/math.html)
 - Python's enum (https://docs.python.org/3/library/enum.html)
+
+# Tools used
+- Eclipse IDE (https://www.eclipse.org/ide/)
+- PyDev plugin for Eclipse (https://www.pydev.org/index.html)
+- GitHub
