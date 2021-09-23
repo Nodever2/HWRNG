@@ -4,6 +4,8 @@ Updated on Sep 22, 2021
 @author: Nodever2
 '''
 
+#THIS IS A GIT TEST CHANGE
+
 #NEW UPDATE! YOU CAN CHANGE THESE CONFIG VALUES TO MAKE THE ALGORITHM WORK DIFFERENTLY!
 #They all default at -1 meaning the program will automatically determine what they should be.
 ConfigMaxPlayersPerGame = 6#Default: 6. Will change to default if not set to an int between 1 and 6 (inclusive).
