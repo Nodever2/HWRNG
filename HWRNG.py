@@ -10,6 +10,7 @@ ConfigMaxPlayersPerGame = 6#Default: 6. Will change to default if not set to an 
 #todo: cleanup code (ADD FUCNTIONS, REMOVE REPEATED CODE), comments etc. maybe redo variable names? add isInstanceOf or whatever it is for config values.
 #and add optional alternate algorhthm for RNGing what team players are on that has an equal chance of all open slots
 #also make it so that the names of maps/leaders print with spaces instead of underscores if possible?
+#also randomize player numbers instead of the weird solution you have now
 
 import random
 import math
@@ -49,25 +50,45 @@ class HWMap(Enum):#Enum with all possible maps in Halo Wars
     FROZEN_VALLEY = 17
     GLACIAL_RAVINE = 18
 
+#function
+#input
+#input
+#returns
+def HWerror(errormsg, warning):
+    if (not(isinstance(warning, int))):
+        print("Error or warning encounterd. Invalid warning flag, should be 1 if warning, 0 if error. Terminating.")
+        warning = 0
+    if (isinstance(errormsg, str)):
+        print(errormsg)
+    else:
+        print("Error or warning encountered. Undefined error message.")
+    print()
+    if (warning == 0):
+        input("Press enter to close...")
+        exit()
+
+
+'''##########################################
+#############Beginning of script#############
+##########################################'''
+if (not(isinstance(ConfigMaxPlayersPerGame,int))):
+    HWerror("Config Error: Max Players Per Game is not an integer. Terminating.", 0)
+    
 pcInput = input("How many players? ")
 try:
     playerCount = int(pcInput)
 except ValueError:
-    print("Unexpected input. Terminating.")
-    print()
-    input("Press enter to close...")
-    exit()
+    HWerror("Unexpected input. Terminating.", 0)
+
 if (playerCount <= 0):
-    print("Unexpected input. Terminating.")
-    print()
-    input("Press enter to close...")
-    exit()
+    HWerror("Unexpected input. Terminating.", 0)
+    
 remainingUnallocatedHumans = playerCount
 maxPlayers = 6
 if (ConfigMaxPlayersPerGame >= 1 and ConfigMaxPlayersPerGame <= 6):
     maxPlayers = ConfigMaxPlayersPerGame
 else:
-    print("Config Warning: Max Players Per Game is outside the allowed range. Using " + str(maxPlayers) + " instead.")
+    HWerror("Config Warning: Max Players Per Game is outside the allowed range. Using " + str(maxPlayers) + " instead.", 1)
 numGamesLeft = int(math.ceil(playerCount/maxPlayers))
 
 iteration = 0
