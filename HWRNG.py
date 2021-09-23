@@ -8,11 +8,8 @@ Updated on Sep 22, 2021
 ############ Beginning of config ############
 ##########################################'''
 ConfigMaxHumansPerGame = 6#Default: 6. Will change to default if not set to an int between 1 and 6 (inclusive).
-#todo: cleanup code (ADD FUCNTIONS, REMOVE REPEATED CODE), comments etc. maybe redo variable names? add isInstanceOf or whatever it is for config values.
-#and add optional alternate algorhthm for RNGing what team players are on that has an equal chance of all open slots
+#todo: add optional alternate algorithm for RNGing what team players are on that has an equal chance of all open slots
 #also make it so that the names of maps/leaders print with spaces instead of underscores if possible?
-#also randomize player numbers instead of the weird solution you have now
-
 '''##########################################
 ############### End of config ###############
 ##########################################'''
@@ -97,7 +94,7 @@ maxHumans = 6
 if (ConfigMaxHumansPerGame >= 1 and ConfigMaxHumansPerGame <= 6):
     maxHumans = ConfigMaxHumansPerGame
 else:
-    HWerror("Config Warning: Max Humasns Per Game is outside the allowed range. Using " + str(maxHumans) + " instead.", 0)
+    HWerror("Config Warning: Max Humans Per Game is outside the allowed range. Using " + str(maxHumans) + " instead.", 0)
 
 numGamesLeft = int(math.ceil(humanCount/maxHumans))#pre-calculated, later used to determine how many humans in each game
 remainingUnallocatedHumans = humanCount#keeps track of how many players there are left to allocate
