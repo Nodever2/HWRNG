@@ -125,8 +125,6 @@ while (remainingUnallocatedHumans > 0):
     #STEP 4.1: SETUP AND CALCULATE HOW MANY HUMANS THIS GAME WILL HAVE
     print()#print an empty line for aesthetics.
     iteration = iteration + 1                                            
-    print("===========================")
-    print("GAME " + str(iteration) + ": ")
     humansThisGame = -1
     if (remainingUnallocatedHumans > maxHumans):
         humansThisGame = int(math.ceil(remainingUnallocatedHumans/numGamesLeft))     #amount of players in each game (todoL figure this out before the loop I think)
@@ -142,7 +140,8 @@ while (remainingUnallocatedHumans > 0):
         teamSize = random.randint(2,3)
     else:
         teamSize = 3
-    print("  This game will be a " + str(teamSize) + "v" + str(teamSize))
+    print("===========================")
+    print("GAME " + str(iteration) + ": " + str(teamSize) + "v" + str(teamSize))
     
     #STEP 4.3: RANDOMIZE MAP BASED ON TEAM SIZE
     mapThisGame = HWMap(0)#default: invalid map
