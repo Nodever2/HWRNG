@@ -2,6 +2,9 @@
 Simple, fun Python Script that implements randomization of various settings of the video game Halo Wars: Definitive Edition to improve replayability of the game.
 This script is based on Leader Overhaul mod (https://www.moddb.com/mods/halo-wars-leader-overhaul-mod/#8117934) and includes all leaders from it as of the September 2021 v1.6 update.
 
+# Usage
+Download HWRNG.py from this repository and run it using Python if you have it installed on your computer. (Python's website is linked below).
+
 # Features
 - Specify how many human players you'd like to play with (any number from 0 to infinity)
 - The human players will be evenly distributed into the minimum number of games required for everyone to play
