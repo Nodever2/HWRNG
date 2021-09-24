@@ -8,8 +8,12 @@ Updated on Sep 23, 2021
 ############ Beginning of config ############
 ##########################################'''
 ConfigMaxHumansPerGame = 6#Default: 6. Will change to default if not set to an int between 1 and 6 (inclusive).
-#todo: add optional alternate algorithm for RNGing what team players are on that has an equal chance of all open slots
-#also make it so that the names of maps/leaders print with spaces instead of underscores if possible?
+ConfigAlternateHumanTeamAssignmentAlgorithm = 1#if this is set to 1, players will be assigned to teams differently:
+#BY DEFAULT, players have a 50/50 chance of being assigned to each team.
+#WITH THIS VARIABLE SET TO 1, players will have an equal chance of being placed in each open slot.
+#This would mean that the algorithm would be more biased towards having teams with roughly equal amount of humans on each team.
+
+#todo: also make it so that the names of maps/leaders print with spaces instead of underscores if possible?
 '''##########################################
 ############### End of config ###############
 ##########################################'''
@@ -87,6 +91,14 @@ except ValueError:
 if (humanCount <= 0):
     HWerror("Unexpected input. Terminating.", 1)
 
+if (not(isinstance(ConfigAlternateHumanTeamAssignmentAlgorithm,int))):
+    HWerror("Config Error: Alternate Team Assignment Algorithm option is not an integer. Setting to default (0).", 0)
+    ConfigAlternateHumanTeamAssignmentAlgorithm = 0
+
+if (ConfigAlternateHumanTeamAssignmentAlgorithm < 0 or ConfigAlternateHumanTeamAssignmentAlgorithm > 1):
+    HWerror("Config Error: Alternate Team Assignment Algorithm is not within the valid range. Setting to default (0).", 0)
+    ConfigAlternateHumanTeamAssignmentAlgorithm = 0
+
 if (not(isinstance(ConfigMaxHumansPerGame,int))):
     HWerror("Config Error: Max Humans Per Game is not an integer. Terminating.", 1)
     
@@ -147,14 +159,36 @@ while (remainingUnallocatedHumans > 0):
     #STEP 4.4: RANDOMIZE WHICH TEAM EACH HUMAN IS ON
     rows, cols = (teamSize*2, 2)                                    #initialize the player array according to team size (and thus # of players in game)
     arr = [[0 for i in range(cols)] for j in range(rows)]#array, where index = player number, 1st value = [(human ID) if human, 0 if AI], 2nd value = leader ID [1-10] (note that AIS can never have 1 here)
-    for i in range(humansThisGame):                        #assign each human a slot in array.
-        desiredSlot = random.randint(0,1)*teamSize
-        while (arr[desiredSlot][0] != 0):
-            desiredSlot = desiredSlot + 1
-            if (desiredSlot >= rows):
+    #4.4.1: ALGORITHM 1: 50/50 CHANCE OF EACH PLAYER BEING ON EACH TEAM
+    if (ConfigAlternateHumanTeamAssignmentAlgorithm == 0):
+        for i in range(humansThisGame):                        #assign each human a slot in array.
+            desiredSlot = random.randint(0,1)*teamSize
+            while (arr[desiredSlot][0] != 0):
+                desiredSlot = desiredSlot + 1
+                if (desiredSlot >= rows):
+                    desiredSlot = 0
+            arr[desiredSlot][0] = randomizedHumanArray[currentHumanIndex]#player # = random human ID (this array is pre-randomized)
+            currentHumanIndex = currentHumanIndex + 1
+    #4.4.2: ALGORITHM 2: EQUAL CHANCE OF PLAYER BEING PLACED IN ANY OPEN SLOT (bias towards even teams)
+    else:#ConfigAlternateHumanTeamAssignmentAlgorithm == 1
+        openSlots = teamSize*2
+        team1index = 0
+        team2index = 0
+        for i in range(humansThisGame):
+            desiredSlot = -1
+            randomNumber = random.randint(team1index,(teamSize*2-1)-team2index)
+            if (randomNumber < teamSize):
                 desiredSlot = 0
-        arr[desiredSlot][0] = randomizedHumanArray[currentHumanIndex]#player # = random human ID (this array is pre-randomized)
-        currentHumanIndex = currentHumanIndex + 1
+                team1index = team1index + 1
+            else:
+                desiredSlot = teamSize
+                team2index = team2index + 1
+            while (arr[desiredSlot][0] != 0):
+                desiredSlot = desiredSlot + 1
+                if (desiredSlot >= rows):
+                    desiredSlot = 0
+            arr[desiredSlot][0] = randomizedHumanArray[currentHumanIndex]#player # = random human ID (this array is pre-randomized)
+            currentHumanIndex = currentHumanIndex + 1
     
     #STEP 4.5: RANDOMIZE WHICH LEADER EACH PLAYER WILL BE (AIs are players too)
     for i in range(rows):#RNG each player's leader
