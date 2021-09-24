@@ -124,7 +124,7 @@ for i in range(humanCount):
 while (remainingUnallocatedHumans > 0):
     #STEP 4.1: SETUP AND CALCULATE HOW MANY HUMANS THIS GAME WILL HAVE
     print()#print an empty line for aesthetics.
-    iteration = iteration + 1                                            
+    iteration += 1
     humansThisGame = -1
     if (remainingUnallocatedHumans > maxHumans):
         humansThisGame = int(math.ceil(remainingUnallocatedHumans/numGamesLeft))     #amount of players in each game (todoL figure this out before the loop I think)
@@ -161,11 +161,11 @@ while (remainingUnallocatedHumans > 0):
         for i in range(humansThisGame):                        #assign each human a slot in array.
             desiredSlot = random.randint(0,1)*teamSize
             while (arr[desiredSlot][0] != 0):#find next open slot after desiredSlot
-                desiredSlot = desiredSlot + 1
+                desiredSlot += 1
                 if (desiredSlot >= rows):
                     desiredSlot = 0
             arr[desiredSlot][0] = randomizedHumanArray[currentHumanIndex]#player # = random human ID (this array is pre-randomized)
-            currentHumanIndex = currentHumanIndex + 1
+            currentHumanIndex += 1
     #4.4.2: ALGORITHM 2: EQUAL CHANCE OF PLAYER BEING PLACED IN ANY OPEN SLOT (bias towards even teams)
     else:#ConfigAlternateHumanTeamAssignmentAlgorithm == 1
         openSlots = teamSize*2
@@ -176,16 +176,16 @@ while (remainingUnallocatedHumans > 0):
             randomNumber = random.randint(team1index,(teamSize*2-1)-team2index)
             if (randomNumber < teamSize):#player is on team 1
                 desiredSlot = 0
-                team1index = team1index + 1
+                team1index += 1
             else:#player is on team 2
                 desiredSlot = teamSize
-                team2index = team2index + 1
+                team2index += 1
             while (arr[desiredSlot][0] != 0):#find next open slot after desiredSlot
-                desiredSlot = desiredSlot + 1
+                desiredSlot += 1
                 if (desiredSlot >= rows):
                     desiredSlot = 0
             arr[desiredSlot][0] = randomizedHumanArray[currentHumanIndex]#player # = random human ID (this array is pre-randomized)
-            currentHumanIndex = currentHumanIndex + 1
+            currentHumanIndex += 1
     
     #STEP 4.5: RANDOMIZE WHICH LEADER EACH PLAYER WILL BE (AIs are players too)
     for i in range(rows):#RNG each player's leader
@@ -206,7 +206,7 @@ while (remainingUnallocatedHumans > 0):
             print("    AI     " + str().rjust(len(str(humanCount)),' ') + ": " + str(arr[i][1].name.replace('_',' ')))
    
     #STEP 4.7: FINISH LOOP AND PREPARE VARIABLES FOR NEXT ITERATION.    
-    numGamesLeft = numGamesLeft - 1
+    numGamesLeft -= 1
     
 #STEP 5: END PROGRAM ONCE LOOP FINISHES
 print()
