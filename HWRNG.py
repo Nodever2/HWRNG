@@ -8,7 +8,7 @@ Updated on Sep 23, 2021
 ############ Beginning of config ############
 ##########################################'''
 ConfigMaxHumansPerGame = 6#Default: 6. Will change to default if not set to an int between 1 and 6 (inclusive).
-ConfigAlternateHumanTeamAssignmentAlgorithm = 1#if this is set to 1, players will be assigned to teams differently:
+ConfigAlternateHumanTeamAssignmentAlgorithm = 0#if this is set to 1, players will be assigned to teams differently:
 #BY DEFAULT, players have a 50/50 chance of being assigned to each team.
 #WITH THIS VARIABLE SET TO 1, players will have an equal chance of being placed in each open slot.
 #This would mean that the algorithm would be more biased towards having teams with roughly equal amount of humans on each team.
