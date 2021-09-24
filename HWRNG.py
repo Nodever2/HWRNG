@@ -12,8 +12,6 @@ ConfigAlternateHumanTeamAssignmentAlgorithm = 1#if this is set to 1, players wil
 #BY DEFAULT, players have a 50/50 chance of being assigned to each team.
 #WITH THIS VARIABLE SET TO 1, players will have an equal chance of being placed in each open slot.
 #This would mean that the algorithm would be more biased towards having teams with roughly equal amount of humans on each team.
-
-#todo: also make it so that the names of maps/leaders print with spaces instead of underscores if possible?
 '''##########################################
 ############### End of config ###############
 ##########################################'''
@@ -37,24 +35,24 @@ class HWLeader(Enum):#Enum with all possible leaders in Halo Wars
     
 class HWMap(Enum):#Enum with all possible maps in Halo Wars
     INVALID = 0#except this
-    BLOOD_GULTCH = 1#1v1
-    CHASMS = 2
-    PIRTH_OUTSKIRTS = 3
-    RELEASE = 4
-    TUNDRA = 5
-    BARRENS = 6
-    BLOOD_RIVER = 7
-    BEASLEYS_PLATEAU = 8#2v2
-    CREVICE = 9
-    THE_DOCKS = 10
-    LABYRINTH = 11
-    REPOSITORY = 12
-    TERMINAL_MORAINE = 13
-    MEMORIAL_BASIN = 14
-    EXILE = 15#3v3
-    FORT_DEEN = 16
-    FROZEN_VALLEY = 17
-    GLACIAL_RAVINE = 18
+    Blood_Gultch = 1#1v1
+    Chasms = 2
+    Pirth_Outskirts = 3
+    Release = 4
+    Tundra = 5
+    Barrens = 6
+    Blood_River = 7
+    Beasleys_Plateau = 8#2v2
+    Crevice = 9
+    The_Docks = 10
+    Labyrinth = 11
+    Repository = 12
+    Terminal_Moraine = 13
+    Memorial_Basin = 14
+    Exile = 15#3v3
+    Fort_Deen = 16
+    Frozen_Valley = 17
+    Glacial_Ravine = 18
 
 '''
 * HWError: function that displays error/warning message and terminates program if needed.
@@ -154,7 +152,7 @@ while (remainingUnallocatedHumans > 0):
         mapThisGame = HWMap(random.randint(8,18))
     else:#3v3
         mapThisGame = HWMap(random.randint(15,18))
-    print("  MAP: " + str(mapThisGame.name))
+    print("  MAP: " + str(mapThisGame.name).replace('_',' '))#Print map. Also remove underscores from map names using str.replace().
     
     #STEP 4.4: RANDOMIZE WHICH TEAM EACH HUMAN IS ON
     rows, cols = (teamSize*2, 2)                                    #initialize the player array according to team size (and thus # of players in game)
@@ -163,7 +161,7 @@ while (remainingUnallocatedHumans > 0):
     if (ConfigAlternateHumanTeamAssignmentAlgorithm == 0):
         for i in range(humansThisGame):                        #assign each human a slot in array.
             desiredSlot = random.randint(0,1)*teamSize
-            while (arr[desiredSlot][0] != 0):
+            while (arr[desiredSlot][0] != 0):#find next open slot after desiredSlot
                 desiredSlot = desiredSlot + 1
                 if (desiredSlot >= rows):
                     desiredSlot = 0
@@ -177,13 +175,13 @@ while (remainingUnallocatedHumans > 0):
         for i in range(humansThisGame):
             desiredSlot = -1
             randomNumber = random.randint(team1index,(teamSize*2-1)-team2index)
-            if (randomNumber < teamSize):
+            if (randomNumber < teamSize):#player is on team 1
                 desiredSlot = 0
                 team1index = team1index + 1
-            else:
+            else:#player is on team 2
                 desiredSlot = teamSize
                 team2index = team2index + 1
-            while (arr[desiredSlot][0] != 0):
+            while (arr[desiredSlot][0] != 0):#find next open slot after desiredSlot
                 desiredSlot = desiredSlot + 1
                 if (desiredSlot >= rows):
                     desiredSlot = 0
@@ -197,16 +195,16 @@ while (remainingUnallocatedHumans > 0):
         else:#if an AI player is in this slot (AIs cannot play as the United Rebel Front in this game)
             arr[i][1] = HWLeader(random.randint(2,10))
     
-    #STEP 4.6: PRINT RESULTS. FIX SPACING TO DYNAMICALLY RESIZE OUTPUT BASED ON NUMBER OF PLAYERS USING str.rjust().
+    #STEP 4.6: PRINT RESULTS. FIX SPACING TO DYNAMICALLY RESIZE OUTPUT BASED ON NUMBER OF PLAYERS USING str.rjust(). Also remove underscores from leader names using str.replace().
     for i in range((int)(rows)):
         if (i == 0):
             print("  TEAM ALPHA:")
         elif(i == (int)(rows/2)):
             print("  TEAM BRAVO:")
         if (arr[i][0] != 0):
-            print("    Player " + str(arr[i][0]).rjust(len(str(humanCount)),' ') + ": " + str(arr[i][1].name))
+            print("    Player " + str(arr[i][0]).rjust(len(str(humanCount)),' ') + ": " + str(arr[i][1].name).replace('_',' '))
         else:
-            print("    AI     " + str().rjust(len(str(humanCount)),' ') + ": " + str(arr[i][1].name))
+            print("    AI     " + str().rjust(len(str(humanCount)),' ') + ": " + str(arr[i][1].name.replace('_',' ')))
    
     #STEP 4.7: FINISH LOOP AND PREPARE VARIABLES FOR NEXT ITERATION.    
     numGamesLeft = numGamesLeft - 1
