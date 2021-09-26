@@ -1,6 +1,6 @@
 '''
 Created on Sep 18, 2021
-Updated on Sep 23, 2021
+Updated on Sep 26, 2021
 @author: Nodever2
 '''
 
@@ -8,10 +8,15 @@ Updated on Sep 23, 2021
 ############ Beginning of config ############
 ##########################################'''
 ConfigMaxHumansPerGame = 6#Default: 6. Will change to default if not set to an int between 1 and 6 (inclusive).
+#If ConfigForceHumanAlliance is set to 1, this needs to be an int between 1 and 3 (inclusive). It will be forced to 3 if too high.
 ConfigAlternateHumanTeamAssignmentAlgorithm = 0#if this is set to 1, players will be assigned to teams differently:
 #BY DEFAULT, players have a 50/50 chance of being assigned to each team.
 #WITH THIS VARIABLE SET TO 1, players will have an equal chance of being placed in each open slot.
 #This would mean that the algorithm would be more biased towards having teams with roughly equal amount of humans on each team.
+#This option does nothing if ConfigForceHumanAlliance is set to 1 or -1.
+ConfigForceHumanAlliance = 0#Default: 0. If set to 1, this option will force the generator to place all humans on a team against AIs.
+#WARNING: THIS FORCES ConfigMaxHumansPerGame TO BE BETWEEN 1-3!!!!!
+#Bonus: You can also set this to -1 to force humans to be on opposing teams (team 1 will have majority of odd # of players per team).
 '''##########################################
 ############### End of config ###############
 ##########################################'''
@@ -90,21 +95,40 @@ if (humanCount <= 0):
     HWerror("Unexpected input. Terminating.", 1)
 
 if (not(isinstance(ConfigAlternateHumanTeamAssignmentAlgorithm,int))):
-    HWerror("Config Error: Alternate Team Assignment Algorithm option is not an integer. Setting to default (0).", 0)
     ConfigAlternateHumanTeamAssignmentAlgorithm = 0
+    HWerror("Config Error: Alternate Team Assignment Algorithm option is not an integer. Setting to default " + str(ConfigAlternateHumanTeamAssignmentAlgorithm) + ".", 0)
 
 if (ConfigAlternateHumanTeamAssignmentAlgorithm < 0 or ConfigAlternateHumanTeamAssignmentAlgorithm > 1):
-    HWerror("Config Error: Alternate Team Assignment Algorithm is not within the valid range. Setting to default (0).", 0)
     ConfigAlternateHumanTeamAssignmentAlgorithm = 0
+    HWerror("Config Error: Alternate Team Assignment Algorithm is not within the valid range. Setting to default " + str(ConfigAlternateHumanTeamAssignmentAlgorithm) + ".", 0)
 
 if (not(isinstance(ConfigMaxHumansPerGame,int))):
-    HWerror("Config Error: Max Humans Per Game is not an integer. Terminating.", 1)
-    
-maxHumans = 6
+    ConfigMaxHumansPerGame = 6
+    HWerror("Config Error: Max Humans Per Game is not an integer. Setting to " + str(ConfigMaxHumansPerGame) + ".", 0)
+
+maxHumans = 6    
 if (ConfigMaxHumansPerGame >= 1 and ConfigMaxHumansPerGame <= 6):
     maxHumans = ConfigMaxHumansPerGame
 else:
     HWerror("Config Warning: Max Humans Per Game is outside the allowed range. Using " + str(maxHumans) + " instead.", 0)
+
+if (not(isinstance(ConfigForceHumanAlliance,int))):
+    ConfigForceHumanAlliance = 0
+    HWerror("Config Error: Force Human Alliance is not an integer. Setting to " + str(ConfigForceHumanAlliance) + ".", 0)
+    
+if (ConfigForceHumanAlliance == 1):
+    if (ConfigMaxHumansPerGame > 3):
+        maxHumans = 3
+        HWerror("Config Warning: Force Human Alliance is " + str(ConfigForceHumanAlliance) + ", but Max Humans Per Game is too high. Setting Max Humans Per Game to " + str(maxHumans) + ".", 0)
+            
+elif (ConfigForceHumanAlliance != 0 and ConfigForceHumanAlliance != -1):
+    ConfigForceHumanAlliance = 0
+    HWerror("Config Warning: Force Human Alliance is outside the allowed range. Using " + str(ConfigForceHumanAlliance) + " instead.", 0)
+    
+if(ConfigAlternateHumanTeamAssignmentAlgorithm != 0 and ConfigForceHumanAlliance != 0):
+    ConfigAlternateHumanTeamAssignmentAlgorithm = 0
+    HWerror("Config Warning: Alternate Team Assignment Algorithm is nonzero, but Force Human Alliance is " + str(ConfigForceHumanAlliance) + ". Setting Alternate Team Assignment Algorithm to " + str(ConfigAlternateHumanTeamAssignmentAlgorithm) + ".", 0)
+    
 
 numGamesLeft = int(math.ceil(humanCount/maxHumans))#pre-calculated, later used to determine how many humans in each game
 remainingUnallocatedHumans = humanCount#keeps track of how many players there are left to allocate
@@ -133,13 +157,10 @@ while (remainingUnallocatedHumans > 0):
     remainingUnallocatedHumans -= humansThisGame
     
     #STEP 4.2: RANDOMIZE TEAM SIZE (1v1, 2v2, or 3v3)
-    teamSize = -1
-    if (humansThisGame <= 2):
-        teamSize = random.randint(1,3)
-    elif (humansThisGame <= 4):
-        teamSize = random.randint(2,3)
-    else:
-        teamSize = 3
+    minTeamSize = int(math.ceil(humansThisGame/2))
+    if (ConfigForceHumanAlliance == 1):
+        minTeamSize = humansThisGame
+    teamSize = random.randint(minTeamSize,3)
     print("===========================")
     print("GAME " + str(iteration) + ": " + str(teamSize) + "v" + str(teamSize))
     
@@ -159,7 +180,12 @@ while (remainingUnallocatedHumans > 0):
     #4.4.1: ALGORITHM 1: 50/50 CHANCE OF EACH PLAYER BEING ON EACH TEAM
     if (ConfigAlternateHumanTeamAssignmentAlgorithm == 0):
         for i in range(humansThisGame):                        #assign each human a slot in array.
-            desiredSlot = random.randint(0,1)*teamSize
+            if (ConfigForceHumanAlliance == 1):
+                desiredSlot = 0
+            elif (ConfigForceHumanAlliance == -1):
+                desiredSlot = (i%2)*(teamSize)#this still randomizes which team everyone is on since player order is pre-randomized
+            else:
+                desiredSlot = random.randint(0,1)*teamSize
             while (arr[desiredSlot][0] != 0):#find next open slot after desiredSlot
                 desiredSlot += 1
                 if (desiredSlot >= rows):
